@@ -7,9 +7,9 @@ namespace Rpg.AttackHandler;
 /// </summary>
 public class NormalStateAttacker : AttackHandler
 {
-    protected override bool CanHandle(Role attacker, Role target) => target.State == State.Normal;
+    protected override bool CanHandle(Role target) => target.State == State.Normal;
 
-    protected override void HandleAttackDetail(Role attacker, Role target)
+    protected override void HandleAttackDetail(Role target)
     {
         target.TakeDamage(100);
     }

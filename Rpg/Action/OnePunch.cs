@@ -37,7 +37,7 @@ public class OnePunch : IAction
         foreach (var target in targets)
         {
             var hpBefore = target.Hp;
-            _handlerChain.Handle(attacker, target);
+            _handlerChain.Handle(target);
             var damage = hpBefore - target.Hp;
             var dead = !target.IsAlive;
             context.Game?.OnRoleDealtDamage(attacker, target, damage, dead);

@@ -7,9 +7,9 @@ namespace Rpg.AttackHandler;
 /// </summary>
 public class LargeHpAttcker : AttackHandler
 {
-    protected override bool CanHandle(Role attacker, Role target) => target.Hp >= 500;
+    protected override bool CanHandle(Role target) => target.Hp >= 500;
 
-    protected override void HandleAttackDetail(Role attacker, Role target)
+    protected override void HandleAttackDetail(Role target)
     {
         target.TakeDamage(300);
     }

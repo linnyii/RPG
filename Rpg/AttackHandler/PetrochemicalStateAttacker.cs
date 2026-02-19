@@ -7,10 +7,11 @@ namespace Rpg.AttackHandler;
 /// </summary>
 public class PetrochemicalStateAttacker : AttackHandler
 {
-    protected override bool CanHandle(Role attacker, Role target) => target.State == State.Petrochemical;
+    protected override bool CanHandle(Role target) => target.State == State.Petrochemical;
 
-    protected override void HandleAttackDetail(Role attacker, Role target)
+    protected override void HandleAttackDetail(Role target)
     {
+        //TODO: why need for loop? can take damage with 240 ?
         for (var i = 0; i < 3; i++)
             target.TakeDamage(80);
     }

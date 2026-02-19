@@ -7,23 +7,23 @@ namespace Rpg.AttackHandler;
 /// </summary>
 public abstract class AttackHandler
 {
-    protected AttackHandler? Next { get; set; }
+    private AttackHandler? Next { get; set; }
 
     public void SetNext(AttackHandler handler)
     {
         Next = handler;
     }
 
-    public void Handle(Role attacker, Role target)
+    public void Handle(Role target)
     {
-        if (CanHandle(attacker, target))
+        if (CanHandle(target))
         {
-            HandleAttackDetail(attacker, target);
+            HandleAttackDetail(target);
             return;
         }
-        Next?.Handle(attacker, target);
+        Next?.Handle(target);
     }
 
-    protected abstract bool CanHandle(Role attacker, Role target);
-    protected abstract void HandleAttackDetail(Role attacker, Role target);
+    protected abstract bool CanHandle(Role target);
+    protected abstract void HandleAttackDetail(Role target);
 }

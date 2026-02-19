@@ -10,7 +10,8 @@ public class SeedSelectionStrategy : IAiSelectionStrategy
 {
     public IAction SelectAction(Role ai, List<IAction> validActions)
     {
-        var aiRole = (Core.AI)ai;
+        //TODO: why need to (AI)??
+        var aiRole = (AI)ai;
         while (true)
         {
             var idx = aiRole.Seed % validActions.Count;
@@ -23,7 +24,7 @@ public class SeedSelectionStrategy : IAiSelectionStrategy
 
     public List<Role> SelectTargets(Role ai, List<Role> candidates, int count)
     {
-        var aiRole = (Core.AI)ai;
+        var aiRole = (AI)ai;
         var n = candidates.Count;
         var result = new List<Role>();
         for (var i = 0; i < count; i++)

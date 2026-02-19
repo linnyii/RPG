@@ -39,13 +39,13 @@ public static class GameOutput
         Console.WriteLine($"選擇 1 位目標: {string.Join(" ", parts)}");
     }
 
-    public static void PrintTargetChoiceMulti(List<Core.Role> candidates, int count)
+    public static void PrintTargetChoiceMulti(List<Role> candidates, int count)
     {
         var parts = candidates.Select((r, i) => $"({i}) [{r.TroopId}]{r.Name}");
         Console.WriteLine($"選擇 {count} 位目標: {string.Join(" ", parts)}");
     }
 
-    public static void PrintSkillUse(Role attacker, List<Core.Role> targets, IAction action)
+    public static void PrintSkillUse(Role attacker, List<Role> targets, IAction action)
     {
         if (action is BasicAttack)
         {
@@ -53,8 +53,8 @@ public static class GameOutput
         }
         else
         {
-            var targetStr = string.Join(", ", targets.Select(t => $"[{t.TroopId}]{t.Name}"));
-            Console.WriteLine($"[{attacker.TroopId}]{attacker.Name} 對 {targetStr} 使用了 {action.Name}。");
+            var targetNames = string.Join(", ", targets.Select(t => $"[{t.TroopId}]{t.Name}"));
+            Console.WriteLine($"[{attacker.TroopId}]{attacker.Name} 對 {targetNames} 使用了 {action.Name}。");
         }
     }
 

@@ -7,23 +7,17 @@ namespace Rpg.Battle;
 /// <summary>
 /// 負責戰鬥主迴圈：P→E→S1→S2→S3，回合結束狀態倒數。
 /// </summary>
-public class BattleRunner
+/// TODO: need BattleRunner for necessary?
+public class BattleRunner(BattleContext context)
 {
-    private readonly BattleContext _context;
+    //TODO: should push steps into phase
     private readonly ActionSelectionPhase _s1 = new();
     private readonly TargetSelectionPhase _s2 = new();
     private readonly ActionExecutionPhase _s3 = new();
 
-    public BattleRunner(BattleContext context)
-    {
-        _context = context;
-    }
-
     public BattleResult Run(Func<string> readLine)
     {
-        var game = _context.Game!;
-        var playerTroop = _context.PlayerTroop;
-        var enemyTroop = _context.EnemyTroop;
+        var game = context.Game!;
 
         game.OnDamageDealt = (attacker, target, damage, dead) =>
         {
@@ -36,6 +30,7 @@ public class BattleRunner
 
         while (true)
         {
+            //TODO
             foreach (var role in GetAllActingOrder())
             {
                 if (!role.IsAlive) continue;
@@ -43,26 +38,37 @@ public class BattleRunner
                 // P 步驟
                 GameOutput.PrintTurnStart(role);
 
-                // E 步驟
-                if (role.State == State.Petrochemical)
-                    continue;
-                if (role.State == State.Poisoned)
+                switch (role.State)
                 {
-                    role.TakeDamage(30);
-                    if (!role.IsAlive)
-                    {
-                        GameOutput.PrintDeath(role);
-                        game.Notify(role);
-                        var r = CheckBattleEnd();
-                        if (r != BattleResult.Ongoing) return r;
+                    // E 步驟
+                    case State.Petrochemical:
                         continue;
+                    case State.Poisoned:
+                    {
+                        role.TakeDamage(30);
+                        if (!role.IsAlive)
+                        {
+                            GameOutput.PrintDeath(role);
+                            game.Notify(role);
+                            var r = CheckBattleEnd();
+                            if (r != BattleResult.Ongoing) return r;
+                            continue;
+                        }
+
+                        break;
                     }
+                    case State.Normal:
+                    case State.Cheerup:
+                        break;
+                    default:
+                        //TODO: add custom exception
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 // S1
                 var validActions = role.Actions.Where(a => role.Mp >= a.MpCost).ToList();
                 IAction action;
-                if (role is Core.AI ai)
+                if (role is AI ai)
                 {
                     action = ai.SelectionStrategy.SelectAction(ai, validActions);
                 }
@@ -91,72 +97,75 @@ public class BattleRunner
                 }
 
                 // S2
+                //TODO: rename
                 var candidates = GetCandidates(role, action);
-                var needCount = action.TargetCount == 0 ? candidates.Count : action.TargetCount;
-                List<Core.Role> targets;
-                if (role is Core.AI ai2)
+                //TODO: rename magic number 
+                var targetCount = action.TargetCount == 0 ? candidates.Count : action.TargetCount;
+                List<Role> targets;
+                //TODO: ai2 is annoying
+                if (role is AI ai2)
                 {
-                    targets = ai2.SelectionStrategy.SelectTargets(ai2, candidates, needCount);
+                    targets = ai2.SelectionStrategy.SelectTargets(ai2, candidates, targetCount);
                 }
                 else
                 {
-                    if (needCount > 0 && candidates.Count > needCount)
+                    if (targetCount > 0 && candidates.Count > targetCount)
                     {
-                        if (needCount == 1)
+                        if (targetCount == 1)
                             GameOutput.PrintTargetChoice(candidates);
                         else
-                            GameOutput.PrintTargetChoiceMulti(candidates, needCount);
+                            GameOutput.PrintTargetChoiceMulti(candidates, targetCount);
                         var parts = readLine()!.Split(',', ' ').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList();
-                        targets = parts.Select(s => int.TryParse(s, out var i) ? i : -1).Where(i => i >= 0 && i < candidates.Count).Take(needCount).Select(i => candidates[i]).ToList();
+                        targets = parts.Select(s => int.TryParse(s, out var i) ? i : -1).Where(i => i >= 0 && i < candidates.Count).Take(targetCount).Select(i => candidates[i]).ToList();
                     }
                     else
                     {
-                        targets = candidates.Take(needCount).ToList();
+                        targets = candidates.Take(targetCount).ToList();
                     }
                 }
 
                 GameOutput.PrintSkillUse(role, targets, action);
-                action.Execute(role, targets, _context);
+                action.Execute(role, targets, context);
 
                 var result = CheckBattleEnd();
                 if (result != BattleResult.Ongoing) return result;
             }
 
             // 回合結束：狀態倒數
-            foreach (var r in _context.GetAllAliveRoles())
+            foreach (var r in context.GetAllAliveRoles())
                 r.DecrementStateRounds();
         }
     }
 
-    private IEnumerable<Core.Role> GetAllActingOrder()
+    private IEnumerable<Role> GetAllActingOrder()
     {
-        foreach (var r in _context.PlayerTroop.Allies.Where(r => r.IsAlive))
+        foreach (var r in context.PlayerTroop.Allies.Where(r => r.IsAlive))
             yield return r;
-        foreach (var r in _context.EnemyTroop.Allies.Where(r => r.IsAlive))
+        foreach (var r in context.EnemyTroop.Allies.Where(r => r.IsAlive))
             yield return r;
     }
 
-    private List<Core.Role> GetCandidates(Core.Role actor, IAction action)
+    private List<Role> GetCandidates(Role actor, IAction action)
     {
-        var enemyTroop = actor.TroopId == _context.PlayerTroop.Id ? _context.EnemyTroop : _context.PlayerTroop;
-        var allyTroop = actor.TroopId == _context.PlayerTroop.Id ? _context.PlayerTroop : _context.EnemyTroop;
+        var enemyTroop = actor.TroopId == context.PlayerTroop.Id ? context.EnemyTroop : context.PlayerTroop;
+        var allyTroop = actor.TroopId == context.PlayerTroop.Id ? context.PlayerTroop : context.EnemyTroop;
         return action.TargetType switch
         {
-            TargetType.Self => new List<Core.Role> { actor },
+            //TODO: why need [] for actor ?
+            TargetType.Self => [actor],
             TargetType.Enemy => enemyTroop.Allies.Where(r => r.IsAlive).ToList(),
             TargetType.Ally => allyTroop.Allies.Where(r => r.IsAlive && r != actor).ToList(),
-            TargetType.All => _context.GetAllAliveRoles().ToList(),
-            _ => new List<Core.Role>()
+            TargetType.All => context.GetAllAliveRoles().ToList(),
+            //TODO: add custom exception
+            _ => []
         };
     }
 
     private BattleResult CheckBattleEnd()
     {
-        var hero = _context.Hero;
-        if (hero != null && !hero.IsAlive)
+        var hero = context.Hero;
+        if (hero is { IsAlive: false })
             return BattleResult.PlayerLose;
-        if (!_context.EnemyTroop.Allies.Any(r => r.IsAlive))
-            return BattleResult.PlayerWin;
-        return BattleResult.Ongoing;
+        return context.EnemyTroop.Allies.Any(r => r.IsAlive) ? BattleResult.Ongoing : BattleResult.PlayerWin;
     }
 }

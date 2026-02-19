@@ -30,7 +30,8 @@ public class RpgGame
     public void Notify(Role deadRole)
     {
         foreach (var obs in _observers)
-            obs.UpdateHp(new List<Role> { deadRole });
+            //TODO: why use list ? every dead role will call this for once
+            obs.UpdateHp([deadRole]);
     }
 
     public bool CheckIsHeroAlive() => Hero != null && Hero.IsAlive;
@@ -40,6 +41,7 @@ public class RpgGame
     /// </summary>
     public void OnRoleDealtDamage(Role attacker, Role target, int damage, bool dead)
     {
+        //TODO: why need so many parameter ?
         OnDamageDealt?.Invoke(attacker, target, damage, dead);
         if (dead)
         {

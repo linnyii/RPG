@@ -61,6 +61,7 @@ public abstract class Role
     {
         if (State == State.Normal) return;
         StateRounds--;
+        //TODO: Magic number
         if (StateRounds <= 0)
         {
             State = State.Normal;
