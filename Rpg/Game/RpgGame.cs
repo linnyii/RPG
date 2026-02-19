@@ -7,22 +7,15 @@ namespace Rpg.Game;
 /// <summary>
 /// 遊戲入口，對應 PDF 的 RpgGame。集中管理 Observer 與 Notify。
 /// </summary>
-public class RpgGame
+public class RpgGame(Troop troop1, Troop troop2, Role? hero)
 {
-    public Troop Troop1 { get; }
-    public Troop Troop2 { get; }
-    public Role? Hero { get; set; }
+    public Troop Troop1 { get; } = troop1;
+    public Troop Troop2 { get; } = troop2;
+    public Role? Hero { get; set; } = hero;
     private readonly List<IAddHpObserver> _observers = new();
 
-    public Action<Core.Role, Core.Role, int, bool>? OnDamageDealt { get; set; }
-    public Action<Core.Role>? OnRoleDiedOutput { get; set; }
-
-    public RpgGame(Troop troop1, Troop troop2, Role? hero)
-    {
-        Troop1 = troop1;
-        Troop2 = troop2;
-        Hero = hero;
-    }
+    public Action<Role, Role, int, bool>? OnDamageDealt { get; set; }
+    public Action<Role>? OnRoleDiedOutput { get; set; }
 
     public void RegisterObserver(IAddHpObserver observer) => _observers.Add(observer);
     public void UnRegisterObserver(IAddHpObserver observer) => _observers.Remove(observer);
@@ -30,11 +23,8 @@ public class RpgGame
     public void Notify(Role deadRole)
     {
         foreach (var obs in _observers)
-            //TODO: why use list ? every dead role will call this for once
-            obs.UpdateHp([deadRole]);
+            obs.UpdateHp(deadRole);
     }
-
-    public bool CheckIsHeroAlive() => Hero != null && Hero.IsAlive;
 
     /// <summary>
     /// 當行動造成傷害並可能導致死亡時呼叫。若 dead 則觸發 Notify。

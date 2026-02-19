@@ -7,14 +7,13 @@ namespace Rpg.Observer;
 /// </summary>
 public class CurseDeath : IAddHpObserver
 {
-    public void UpdateHp(List<Role> roles)
+    public void UpdateHp(Role deadRole)
     {
-        foreach (var dead in roles.Where(r => !r.IsAlive))
+        if (deadRole.IsAlive)
+            return;
+        foreach (var caster in deadRole.CursedBy.Distinct().Where(c => c.IsAlive))
         {
-            foreach (var caster in dead.CursedBy.Distinct().Where(c => c.IsAlive))
-            {
-                caster.AddHp(dead.Mp);
-            }
+            caster.AddHp(deadRole.Mp);
         }
     }
 }

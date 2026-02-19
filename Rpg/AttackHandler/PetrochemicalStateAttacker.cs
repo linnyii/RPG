@@ -11,8 +11,6 @@ public class PetrochemicalStateAttacker : AttackHandler
 
     protected override void HandleAttackDetail(Role target)
     {
-        //TODO: why need for loop? can take damage with 240 ?
-        for (var i = 0; i < 3; i++)
-            target.TakeDamage(80);
+        target.TakeDamage(240);
     }
 }

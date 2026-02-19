@@ -7,5 +7,5 @@ namespace Rpg.Observer;
 /// </summary>
 public interface IAddHpObserver
 {
-    void UpdateHp(List<Role> roles);
+    void UpdateHp(Role deadRole);
 }

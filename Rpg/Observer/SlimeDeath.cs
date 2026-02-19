@@ -7,14 +7,11 @@ namespace Rpg.Observer;
 /// </summary>
 public class SlimeDeath : IAddHpObserver
 {
-    public void UpdateHp(List<Role> roles)
+    public void UpdateHp(Role deadRole)
     {
-        foreach (var role in roles)
-        {
-            if (role is not Slime slime || slime.IsAlive)
-                continue; // 只處理已死亡的 Slime
-            if (slime.SummonedBy != null && slime.SummonedBy.IsAlive)
-                slime.SummonedBy.AddHp(30);
-        }
+        if (deadRole is not Slime slime || slime.IsAlive)
+            return;
+        if (slime.SummonedBy != null && slime.SummonedBy.IsAlive)
+            slime.SummonedBy.AddHp(30);
     }
 }

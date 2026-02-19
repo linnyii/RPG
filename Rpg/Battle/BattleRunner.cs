@@ -61,8 +61,7 @@ public class BattleRunner(BattleContext context)
                     case State.Cheerup:
                         break;
                     default:
-                        //TODO: add custom exception
-                        throw new ArgumentOutOfRangeException();
+                        throw new UnsupportedStateException(role.State);
                 }
 
                 // S1
@@ -131,9 +130,8 @@ public class BattleRunner(BattleContext context)
                 if (result != BattleResult.Ongoing) return result;
             }
 
-            // 回合結束：狀態倒數
-            foreach (var r in context.GetAllAliveRoles())
-                r.DecrementStateRounds();
+            foreach (var role in context.GetAllAliveRoles())
+                role.DecrementStateRounds();
         }
     }
 
@@ -151,13 +149,11 @@ public class BattleRunner(BattleContext context)
         var allyTroop = actor.TroopId == context.PlayerTroop.Id ? context.PlayerTroop : context.EnemyTroop;
         return action.TargetType switch
         {
-            //TODO: why need [] for actor ?
             TargetType.Self => [actor],
             TargetType.Enemy => enemyTroop.Allies.Where(r => r.IsAlive).ToList(),
             TargetType.Ally => allyTroop.Allies.Where(r => r.IsAlive && r != actor).ToList(),
             TargetType.All => context.GetAllAliveRoles().ToList(),
-            //TODO: add custom exception
-            _ => []
+            _ => throw new UnsupportedTargetTypeException(action.TargetType)
         };
     }
 
