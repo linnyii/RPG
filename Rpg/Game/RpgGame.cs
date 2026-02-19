@@ -10,8 +10,8 @@ public class RpgGame
 {
     private readonly List<IAddHpObserver> _observers = [];
 
-    public Action<Role, Role, int, bool>? OnDamageDealt { get; set; }
-    public Action<Role>? OnRoleDiedOutput { get; set; }
+    private Action<Role, Role, int, bool>? OnDamageDealt { get; }
+    private Action<Role>? OnRoleDiedOutput { get; }
 
     public RpgGame()
     {
@@ -39,13 +39,10 @@ public class RpgGame
     /// </summary>
     public void OnRoleDealtDamage(Role attacker, Role target, int damage, bool dead)
     {
-        //TODO: why need so many parameter ?
         OnDamageDealt?.Invoke(attacker, target, damage, dead);
-        if (dead)
-        {
-            OnRoleDiedOutput?.Invoke(target);
-            Notify(target);
-        }
+        if (!dead) return;
+        OnRoleDiedOutput?.Invoke(target);
+        Notify(target);
     }
 
     /// <summary>
