@@ -4,10 +4,6 @@ using Rpg.Game;
 
 namespace Rpg.Battle;
 
-/// <summary>
-/// 負責戰鬥主迴圈：P→E→S1→S2→S3，回合結束狀態倒數。
-/// </summary>
-/// TODO: need BattleRunner for necessary?
 public class BattleRunner(BattleContext context)
 {
     //TODO: should push steps into phase
@@ -17,17 +13,6 @@ public class BattleRunner(BattleContext context)
 
     public BattleResult Run(Func<string> readLine)
     {
-        var game = context.Game!;
-
-        game.OnDamageDealt = (attacker, target, damage, dead) =>
-        {
-            GameOutput.PrintDamage(attacker, target, damage);
-            if (dead)
-                GameOutput.PrintDeath(target);
-        };
-        game.OnRoleDiedOutput = GameOutput.PrintDeath;
-        game.OnMpInsufficient = GameOutput.PrintMpInsufficient;
-
         while (true)
         {
             //TODO
@@ -49,7 +34,7 @@ public class BattleRunner(BattleContext context)
                         if (!role.IsAlive)
                         {
                             GameOutput.PrintDeath(role);
-                            game.Notify(role);
+                            context.Game!.Notify(role);
                             var r = CheckBattleEnd();
                             if (r != BattleResult.Ongoing) return r;
                             continue;

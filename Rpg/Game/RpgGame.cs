@@ -1,4 +1,3 @@
-using Rpg.Battle;
 using Rpg.Core;
 using Rpg.Observer;
 
@@ -7,15 +6,24 @@ namespace Rpg.Game;
 /// <summary>
 /// 遊戲入口，對應 PDF 的 RpgGame。集中管理 Observer 與 Notify。
 /// </summary>
-public class RpgGame(Troop troop1, Troop troop2, Role? hero)
+public class RpgGame
 {
-    public Troop Troop1 { get; } = troop1;
-    public Troop Troop2 { get; } = troop2;
-    public Role? Hero { get; set; } = hero;
-    private readonly List<IAddHpObserver> _observers = new();
+    private readonly List<IAddHpObserver> _observers = [];
 
     public Action<Role, Role, int, bool>? OnDamageDealt { get; set; }
     public Action<Role>? OnRoleDiedOutput { get; set; }
+
+    public RpgGame()
+    {
+        OnDamageDealt = (attacker, target, damage, dead) =>
+        {
+            GameOutput.PrintDamage(attacker, target, damage);
+            if (dead)
+                GameOutput.PrintDeath(target);
+        };
+        OnRoleDiedOutput = GameOutput.PrintDeath;
+        OnMpInsufficient = GameOutput.PrintMpInsufficient;
+    }
 
     public void RegisterObserver(IAddHpObserver observer) => _observers.Add(observer);
     public void UnRegisterObserver(IAddHpObserver observer) => _observers.Remove(observer);

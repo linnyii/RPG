@@ -38,7 +38,7 @@ troop2.Allies.Add(slime2);
 troop1.SetEnemy(troop2);
 troop2.SetEnemy(troop1);
 
-var game = new RpgGame(troop1, troop2, hero);
+var game = new RpgGame();
 game.RegisterObserver(new SlimeDeath());
 game.RegisterObserver(new CurseDeath());
 
