@@ -13,46 +13,58 @@ public class TargetSelectionStep : IBattleStep
     {
         var role = context.CurrentRole;
         var action = context.SelectedAction!;
-        var candidates = GetCandidates(role, action, context.BattleContext);
+        var candidates = GetCandidatesByTargetType(role, action, context.BattleContext);
         var targetCount = action.TargetCount == 0 ? candidates.Count : action.TargetCount;
 
-        if (role is Core.AI ai)
+        switch (role)
         {
-            context.SelectTargets(ai.SelectionStrategy.SelectTargets(ai, candidates, targetCount));
-        }
-        else
-        {
-            if (targetCount > 0 && candidates.Count > targetCount)
-            {
-                if (targetCount == 1)
-                    GameOutput.PrintTargetChoice(candidates);
-                else
-                    GameOutput.PrintTargetChoiceMulti(candidates, targetCount);
+            case Core.AI ai:
+                context.SelectTargets(ai.SelectionStrategy.SelectTargets(ai, candidates, targetCount));
+                break;
 
-                var parts = (Console.ReadLine() ?? "")
-                    .Split(',', ' ')
-                    .Select(s => s.Trim())
-                    .Where(s => !string.IsNullOrEmpty(s))
-                    .ToList();
+            case Slime:
+                var randomIdx = Random.Shared.Next(candidates.Count);
+                context.SelectTargets([candidates[randomIdx]]);
+                break;
 
-                context.SelectTargets(parts
-                    .Select(s => int.TryParse(s, out var i) ? i : -1)
-                    .Where(i => i >= 0 && i < candidates.Count)
-                    .Take(targetCount)
-                    .Select(i => candidates[i])
-                    .ToList());
-            }
-            else
-            {
-                context.SelectTargets(candidates.Take(targetCount).ToList());
-            }
+            case Hero:
+                HandleHeroTargetSelection(context, targetCount, candidates);
+                break;
         }
 
         context.MarkCompleted<TargetSelectionStep>();
         return new ActionExecutionStep();
     }
 
-    private static List<Role> GetCandidates(Role actor, IAction action, BattleContext battleContext)
+    private static void HandleHeroTargetSelection(TakeTurnContext context, int targetCount, List<Role> candidates)
+    {
+        if (targetCount > 0 && candidates.Count > targetCount)
+        {
+            if (targetCount == 1)
+                GameOutput.PrintTargetChoice(candidates);
+            else
+                GameOutput.PrintTargetChoiceMulti(candidates, targetCount);
+
+            var parts = (Console.ReadLine() ?? "")
+                .Split(',', ' ')
+                .Select(s => s.Trim())
+                .Where(s => !string.IsNullOrEmpty(s))
+                .ToList();
+
+            context.SelectTargets(parts
+                .Select(s => int.TryParse(s, out var i) ? i : -1)
+                .Where(i => i >= 0 && i < candidates.Count)
+                .Take(targetCount)
+                .Select(i => candidates[i])
+                .ToList());
+        }
+        else
+        {
+            context.SelectTargets(candidates.Take(targetCount).ToList());
+        }
+    }
+
+    private static List<Role> GetCandidatesByTargetType(Role actor, IAction action, BattleContext battleContext)
     {
         var enemyTroop = actor.TroopId == battleContext.PlayerTroop.Id
             ? battleContext.EnemyTroop
