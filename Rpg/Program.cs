@@ -42,12 +42,10 @@ var game = new RpgGame();
 game.RegisterObserver(new SlimeDeath());
 game.RegisterObserver(new CurseDeath());
 
-var context = new BattleContext(troop1, troop2, hero)
+var executor = new BattleExecutor(new BattleContext(troop1, troop2, hero)
 {
     Game = game
-};
-
-var executor = new BattleExecutor(context);
+});
 var result = executor.Run();
 
 if (result == BattleResult.PlayerWin)
