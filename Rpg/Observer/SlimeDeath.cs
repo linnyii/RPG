@@ -11,7 +11,7 @@ public class SlimeDeath : IAddHpObserver
     {
         if (deadRole is not Slime slime || slime.IsAlive)
             return;
-        if (slime.SummonedBy != null && slime.SummonedBy.IsAlive)
+        if (slime.SummonedBy is { IsAlive: true })
             slime.SummonedBy.AddHp(30);
     }
 }

@@ -18,7 +18,7 @@ hero.Actions.Add(new WaterBall());
 troop1.Allies.Add(hero);
 
 var aiStrategy = new SeedSelectionStrategy();
-var slime1 = new AI("Slime1", 150, 60, 49, aiStrategy)
+var slime1 = new AI("AIRole1", 150, 60, 49, aiStrategy)
 {
     TroopId = 2
 };
@@ -26,7 +26,7 @@ slime1.Actions.Add(new BasicAttack());
 slime1.Actions.Add(new FireBall());
 troop2.Allies.Add(slime1);
 
-var slime2 = new AI("Slime2", 150, 200, 50, aiStrategy)
+var slime2 = new AI("AIRole2", 150, 200, 50, aiStrategy)
 {
     TroopId = 2
 };
@@ -47,8 +47,8 @@ var context = new BattleContext(troop1, troop2, hero)
     Game = game
 };
 
-var runner = new BattleRunner(context);
-var result = runner.Run(() => Console.ReadLine() ?? "");
+var executor = new BattleExecutor(context);
+var result = executor.Run();
 
 if (result == BattleResult.PlayerWin)
     GameOutput.PrintVictory();

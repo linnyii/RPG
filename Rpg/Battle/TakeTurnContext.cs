@@ -7,11 +7,11 @@ public class TakeTurnContext
 {
     public required Role CurrentRole { get; init; }
     public required BattleContext BattleContext { get; init; }
-    public required Func<string> ReadLine { get; init; }
+    public string ReadLine() => Console.ReadLine() ?? "";
 
     public IAction? SelectedAction { get; set; }
     public List<Role>? SelectedTargets { get; set; }
-    public BattleResult? EarlyResult { get; set; }
+
 
     private HashSet<Type> CompletedSteps { get; } = [];
 

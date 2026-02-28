@@ -2,9 +2,6 @@ using Rpg.Core;
 
 namespace Rpg.Battle;
 
-/// <summary>
-/// 軍隊，對應 PDF 的 Troop。
-/// </summary>
 public class Troop(int id)
 {
     public string Name { get; set; } = "";

@@ -25,7 +25,6 @@ public class ApplyEffectStep : IBattleStep
                     GameOutput.PrintDeath(role);
                     context.BattleContext.Game!.Notify(role);
                     context.MarkCompleted<ApplyEffectStep>();
-                    context.EarlyResult = CheckBattleEnd(context);
                     return null;
                 }
                 break;
@@ -40,14 +39,5 @@ public class ApplyEffectStep : IBattleStep
 
         context.MarkCompleted<ApplyEffectStep>();
         return new ActionSelectionStep();
-    }
-
-    private static BattleResult CheckBattleEnd(TakeTurnContext context)
-    {
-        if (context.BattleContext.Hero is { IsAlive: false })
-            return BattleResult.PlayerLose;
-        return context.BattleContext.EnemyTroop.Allies.Any(r => r.IsAlive)
-            ? BattleResult.Ongoing
-            : BattleResult.PlayerWin;
     }
 }
