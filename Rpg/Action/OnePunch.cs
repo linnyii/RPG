@@ -14,13 +14,13 @@ public class OnePunch : IAction
     {
         var largeHp = new LargeHpAttcker();
         var poisoned = new PoisonedStateAttacker();
-        var cheerup = new CheerUpStateAttacker();
+        var cheerUp = new CheerUpStateAttacker();
         var petro = new PetrochemicalStateAttacker();
         var normal = new NormalStateAttacker();
 
         largeHp.SetNext(poisoned);
-        poisoned.SetNext(cheerup);
-        cheerup.SetNext(petro);
+        poisoned.SetNext(cheerUp);
+        cheerUp.SetNext(petro);
         petro.SetNext(normal);
 
         _handlerChain = largeHp;

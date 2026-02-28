@@ -40,9 +40,6 @@ public abstract class Role
 
     public bool IsAlive => Hp > 0;
 
-    /// <summary>
-    /// 扣除 HP，返回是否死亡。
-    /// </summary>
     public bool TakeDamage(int damage)
     {
         Hp = Math.Max(0, Hp - damage);
