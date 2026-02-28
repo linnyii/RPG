@@ -14,7 +14,7 @@ public class Curse : IAction
 
     public void Execute(Role attacker, List<Role> targets, Battle.BattleContext context)
     {
-        attacker.Mp -= MpCost;
+        attacker.DeductMp(MpCost);
         foreach (var target in targets.Where(target => !target.CursedBy.Contains(attacker)))
         {
             target.CursedBy.Add(attacker);

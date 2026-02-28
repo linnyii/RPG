@@ -13,7 +13,7 @@ public static class GameOutput
         State.Normal => "正常",
         State.Petrochemical => "石化",
         State.Poisoned => "中毒",
-        State.Cheerup => "受到鼓舞",
+        State.CheerUp => "受到鼓舞",
         _ => "正常"
     };
 

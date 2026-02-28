@@ -30,7 +30,7 @@ public class ApplyEffectStep : IBattleStep
                 break;
 
             case State.Normal:
-            case State.Cheerup:
+            case State.CheerUp:
                 break;
 
             default:

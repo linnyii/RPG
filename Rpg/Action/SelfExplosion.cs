@@ -14,7 +14,7 @@ public class SelfExplosion : IAction
 
     public void Execute(Role attacker, List<Role> targets, Battle.BattleContext context)
     {
-        attacker.Mp -= MpCost;
+        attacker.DeductMp(MpCost);
         attacker.TakeDamage(attacker.Hp); // 自殺
         context.Game?.OnRoleDied(attacker);
 

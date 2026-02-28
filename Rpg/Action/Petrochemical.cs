@@ -14,11 +14,10 @@ public class Petrochemical : IAction
 
     public void Execute(Role attacker, List<Role> targets, Battle.BattleContext context)
     {
-        attacker.Mp -= MpCost;
+        attacker.DeductMp(MpCost);
         foreach (var target in targets)
         {
-            target.State = State.Petrochemical;
-            target.StateRounds = 3;
+            target.ApplyState(State.Petrochemical, 3);
         }
     }
 }

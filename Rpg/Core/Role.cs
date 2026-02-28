@@ -2,41 +2,20 @@ using Rpg.Action;
 
 namespace Rpg.Core;
 
-/// <summary>
-/// 角色基底，對應 PDF 的 Role。
-/// </summary>
-public abstract class Role
+public abstract class Role(string name, int hp, int mp, int str)
 {
-    public string Name { get; protected set; }
-    public int Hp { get; set; }
-    public int Mp { get; set; }
-    public int Str { get; set; }
-    public State State { get; set; } = State.Normal;
-    
-    /// <summary>
-    /// 狀態剩餘回合數，歸零時還原為 Normal。
-    /// </summary>
-    public int StateRounds { get; set; }
+    public string Name { get; protected set; } = name;
+    public int Hp { get; private set; } = hp;
+    public int Mp { get; private set; } = mp;
+    public int Str { get; } = str;
+    public State State { get; private set; } = State.Normal;
+    private int StateRounds { get; set; }
 
-    /// <summary>
-    /// 受誰詛咒（同一施咒者可多次加入，規格說不疊加）
-    /// </summary>
-    public List<Role> CursedBy { get; } = new();
+    public List<Role> CursedBy { get; } = [];
 
-    /// <summary>
-    /// 可執行的行動列表（含 BasicAttack + 技能）
-    /// </summary>
-    public List<IAction> Actions { get; } = new();
+    public List<IAction> Actions { get; } = [];
 
-    public int TroopId { get; set; }
-
-    protected Role(string name, int hp, int mp, int str)
-    {
-        Name = name;
-        Hp = hp;
-        Mp = mp;
-        Str = str;
-    }
+    public int TroopId { get; init; }
 
     public bool IsAlive => Hp > 0;
 
@@ -46,23 +25,38 @@ public abstract class Role
         return !IsAlive;
     }
 
-    /// <summary>
-    /// 增加 HP。
-    /// </summary>
     public void AddHp(int amount)
     {
         Hp = Math.Min(1000, Hp + amount);
+    }
+
+    public void DeductMp(int cost)
+    {
+        Mp -= cost;
+    }
+
+    public void ApplyState(State state, int rounds)
+    {
+        State = state;
+        StateRounds = rounds;
+    }
+
+    public void ClearState()
+    {
+        State = State.Normal;
+        StateRounds = 0;
     }
 
     public void DecrementStateRounds()
     {
         if (State == State.Normal) return;
         StateRounds--;
-        //TODO: Magic number
-        if (StateRounds <= 0)
-        {
-            State = State.Normal;
-            StateRounds = 0;
-        }
+        if (IsStillUnNormalStatue()) return;
+        ClearState();
+    }
+
+    private bool IsStillUnNormalStatue()
+    {
+        return StateRounds > 0;
     }
 }

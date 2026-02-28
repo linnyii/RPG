@@ -14,7 +14,7 @@ public class SelfHealing : IAction
 
     public void Execute(Role attacker, List<Role> targets, Battle.BattleContext context)
     {
-        attacker.Mp -= MpCost;
+        attacker.DeductMp(MpCost);
         attacker.AddHp(150);
         context.Game?.OnRoleHealed(attacker, 150);
     }

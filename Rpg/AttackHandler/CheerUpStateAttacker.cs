@@ -7,12 +7,11 @@ namespace Rpg.AttackHandler;
 /// </summary>
 public class CheerUpStateAttacker : AttackHandler
 {
-    protected override bool CanHandle(Role target) => target.State == State.Cheerup;
+    protected override bool CanHandle(Role target) => target.State == State.CheerUp;
 
     protected override void HandleAttackDetail(Role target)
     {
         target.TakeDamage(100);
-        target.State = State.Normal;
-        target.StateRounds = 0;
+        target.ClearState();
     }
 }

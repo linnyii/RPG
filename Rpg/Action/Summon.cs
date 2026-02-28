@@ -14,7 +14,7 @@ public class Summon : IAction
 
     public void Execute(Role attacker, List<Role> targets, Battle.BattleContext context)
     {
-        attacker.Mp -= MpCost;
+        attacker.DeductMp(MpCost);
 
         var troop = attacker.TroopId == context.PlayerTroop.Id ? context.PlayerTroop : context.EnemyTroop;
         var slime = new Slime(attacker) { TroopId = troop.Id };

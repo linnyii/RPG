@@ -17,7 +17,7 @@ public class BasicAttack : IAction
         foreach (var target in targets)
         {
             var damage = attacker.Str;
-            if (attacker.State == State.Cheerup)
+            if (attacker.State == State.CheerUp)
                 damage += 50;
             var dead = target.TakeDamage(damage);
             context.Game?.OnRoleDealtDamage(attacker, target, damage, dead);
