@@ -8,6 +8,6 @@ namespace Rpg.AiStrategy;
 /// </summary>
 public interface IAiSelectionStrategy
 {
-    IAction SelectAction(Role ai, List<IAction> validActions);
-    List<Role> SelectTargets(Role ai, List<Role> candidates, int count);
+    IAction SelectAction(Core.AI ai, List<IAction> validActions);
+    List<Role> SelectTargets(Core.AI ai, List<Role> candidates, int count);
 }

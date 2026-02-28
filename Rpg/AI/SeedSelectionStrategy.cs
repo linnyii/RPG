@@ -6,31 +6,27 @@ namespace Rpg.AI;
 
 public class SeedSelectionStrategy : IAiSelectionStrategy
 {
-    public IAction SelectAction(Role ai, List<IAction> validActions)
+    public IAction SelectAction(Core.AI ai, List<IAction> validActions)
     {
-        //TODO: why need to (AI)??
-        var aiRole = (Core.AI)ai;
         while (true)
         {
-            var idx = aiRole.Seed % validActions.Count;
+            var idx = ai.Seed % validActions.Count;
             var action = validActions[idx];
-            aiRole.Seed++;
-            if (aiRole.Mp >= action.MpCost)
+            ai.Seed++;
+            if (ai.Mp >= action.MpCost)
                 return action;
         }
     }
 
-    public List<Role> SelectTargets(Role ai, List<Role> candidates, int count)
+    public List<Role> SelectTargets(Core.AI ai, List<Role> candidates, int count)
     {
-        var aiRole = (Core.AI)ai;
-        var n = candidates.Count;
-        var result = new List<Role>();
+        var selectTargets = new List<Role>();
         for (var i = 0; i < count; i++)
         {
-            var idx = (aiRole.Seed + i) % n;
-            result.Add(candidates[idx]);
+            var idx = (ai.Seed + i) % candidates.Count;
+            selectTargets.Add(candidates[idx]);
         }
-        aiRole.Seed++;
-        return result;
+        ai.Seed++;
+        return selectTargets;
     }
 }
