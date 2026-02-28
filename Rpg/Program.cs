@@ -1,5 +1,5 @@
 using Rpg.Action;
-using Rpg.AiStrategy;
+using Rpg.AI;
 using Rpg.Battle;
 using Rpg.Core;
 using Rpg.Game;

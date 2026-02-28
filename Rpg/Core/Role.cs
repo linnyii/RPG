@@ -10,13 +10,9 @@ public abstract class Role(string name, int hp, int mp, int str)
     public int Str { get; } = str;
     public State State { get; private set; } = State.Normal;
     private int StateRounds { get; set; }
-
     public List<Role> CursedBy { get; } = [];
-
     public List<IAction> Actions { get; } = [];
-
     public int TroopId { get; init; }
-
     public bool IsAlive => Hp > 0;
 
     public bool TakeDamage(int damage)
@@ -41,7 +37,7 @@ public abstract class Role(string name, int hp, int mp, int str)
         StateRounds = rounds;
     }
 
-    public void ClearState()
+    public void SetStateToNormal()
     {
         State = State.Normal;
         StateRounds = 0;
@@ -52,7 +48,7 @@ public abstract class Role(string name, int hp, int mp, int str)
         if (State == State.Normal) return;
         StateRounds--;
         if (IsStillUnNormalStatue()) return;
-        ClearState();
+        SetStateToNormal();
     }
 
     private bool IsStillUnNormalStatue()

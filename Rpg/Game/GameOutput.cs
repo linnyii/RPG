@@ -3,12 +3,9 @@ using Rpg.Core;
 
 namespace Rpg.Game;
 
-/// <summary>
-/// 輸出格式，對應補充規格。
-/// </summary>
 public static class GameOutput
 {
-    public static string StateName(State s) => s switch
+    private static string StateName(State s) => s switch
     {
         State.Normal => "正常",
         State.Petrochemical => "石化",
@@ -28,7 +25,7 @@ public static class GameOutput
         Console.WriteLine($"選擇行動：{string.Join(" ", parts)}");
     }
 
-    public static void PrintMpInsufficient()
+    public static void PrintMpIsSufficient()
     {
         Console.WriteLine("你缺乏 MP，不能進行此行動。");
     }

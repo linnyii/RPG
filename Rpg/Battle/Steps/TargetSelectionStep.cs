@@ -16,9 +16,9 @@ public class TargetSelectionStep : IBattleStep
         var candidates = GetCandidates(role, action, context.BattleContext);
         var targetCount = action.TargetCount == 0 ? candidates.Count : action.TargetCount;
 
-        if (role is AI ai)
+        if (role is Core.AI ai)
         {
-            context.SelectedTargets = ai.SelectionStrategy.SelectTargets(ai, candidates, targetCount);
+            context.SelectTargets(ai.SelectionStrategy.SelectTargets(ai, candidates, targetCount));
         }
         else
         {
@@ -29,22 +29,22 @@ public class TargetSelectionStep : IBattleStep
                 else
                     GameOutput.PrintTargetChoiceMulti(candidates, targetCount);
 
-                var parts = context.ReadLine()
+                var parts = (Console.ReadLine() ?? "")
                     .Split(',', ' ')
                     .Select(s => s.Trim())
                     .Where(s => !string.IsNullOrEmpty(s))
                     .ToList();
 
-                context.SelectedTargets = parts
+                context.SelectTargets(parts
                     .Select(s => int.TryParse(s, out var i) ? i : -1)
                     .Where(i => i >= 0 && i < candidates.Count)
                     .Take(targetCount)
                     .Select(i => candidates[i])
-                    .ToList();
+                    .ToList());
             }
             else
             {
-                context.SelectedTargets = candidates.Take(targetCount).ToList();
+                context.SelectTargets(candidates.Take(targetCount).ToList());
             }
         }
 

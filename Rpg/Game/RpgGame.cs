@@ -19,7 +19,7 @@ public class RpgGame
                 GameOutput.PrintDeath(target);
         };
         OnRoleDiedOutput = GameOutput.PrintDeath;
-        OnMpIsSufficient = GameOutput.PrintMpInsufficient;
+        OnMpIsSufficient = GameOutput.PrintMpIsSufficient;
     }
 
     public void RegisterObserver(IAddHpObserver observer) => _observers.Add(observer);

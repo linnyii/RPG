@@ -2,9 +2,6 @@ using Rpg.Core;
 
 namespace Rpg.Battle;
 
-/// <summary>
-/// 戰鬥上下文，供 Action 與 Observer 使用（補充規格）。
-/// </summary>
 public class BattleContext(Troop playerTroop, Troop enemyTroop, Role? hero)
 {
     public Troop PlayerTroop { get; } = playerTroop;

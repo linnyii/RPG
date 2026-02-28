@@ -9,30 +9,30 @@ public class ActionSelectionStep : IBattleStep
         => context.IsCompleted<PrintStatusStep>()
         && context.IsCompleted<ApplyEffectStep>();
 
-    public IBattleStep? Execute(TakeTurnContext context)
+    public IBattleStep Execute(TakeTurnContext context)
     {
         var role = context.CurrentRole;
 
-        if (role is AI ai)
+        if (role is Core.AI ai)
         {
             var validActions = role.Actions.Where(a => role.Mp >= a.MpCost).ToList();
-            context.SelectedAction = ai.SelectionStrategy.SelectAction(ai, validActions);
+            context.SelectAction(ai.SelectionStrategy.SelectAction(ai, validActions));
         }
         else
         {
             GameOutput.PrintActionChoice(role, role.Actions);
             while (true)
             {
-                var input = context.ReadLine();
-                if (int.TryParse(input?.Trim(), out var idx) && idx >= 0 && idx < role.Actions.Count)
+                var input = Console.ReadLine();
+                if (IsValidActionSelection(input, role, out var selectedAction))
                 {
-                    var a = role.Actions[idx];
+                    var a = role.Actions[selectedAction];
                     if (role.Mp >= a.MpCost)
                     {
-                        context.SelectedAction = a;
+                        context.SelectAction(a);
                         break;
                     }
-                    GameOutput.PrintMpInsufficient();
+                    GameOutput.PrintMpIsSufficient();
                     GameOutput.PrintActionChoice(role, role.Actions);
                 }
                 else
@@ -44,5 +44,10 @@ public class ActionSelectionStep : IBattleStep
 
         context.MarkCompleted<ActionSelectionStep>();
         return new TargetSelectionStep();
+    }
+
+    private static bool IsValidActionSelection(string? input, Role role, out int idx)
+    {
+        return int.TryParse(input?.Trim(), out idx) && idx >= 0 && idx < role.Actions.Count;
     }
 }

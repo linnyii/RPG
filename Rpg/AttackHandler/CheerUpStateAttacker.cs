@@ -12,6 +12,6 @@ public class CheerUpStateAttacker : AttackHandler
     protected override void HandleAttackDetail(Role target)
     {
         target.TakeDamage(100);
-        target.ClearState();
+        target.SetStateToNormal();
     }
 }

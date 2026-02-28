@@ -5,15 +5,14 @@ namespace Rpg.Battle;
 
 public class TakeTurnContext
 {
-    public required Role CurrentRole { get; init; }
     public required BattleContext BattleContext { get; init; }
-    public string ReadLine() => Console.ReadLine() ?? "";
-
-    public IAction? SelectedAction { get; set; }
-    public List<Role>? SelectedTargets { get; set; }
-
-
+    public required Role CurrentRole { get; init; }
+    public IAction? SelectedAction { get; private set; }
+    public List<Role>? SelectedTargets { get; private set; }
     private HashSet<Type> CompletedSteps { get; } = [];
+
+    public void SelectAction(IAction action) => SelectedAction = action;
+    public void SelectTargets(List<Role> targets) => SelectedTargets = targets;
 
     public bool IsCompleted<T>() where T : IBattleStep
         => CompletedSteps.Contains(typeof(T));
