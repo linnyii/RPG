@@ -1,4 +1,4 @@
-namespace Rpg.Core;
+﻿namespace Rpg.Enum;
 
 public enum State
 {

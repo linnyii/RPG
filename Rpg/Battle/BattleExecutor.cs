@@ -9,7 +9,7 @@ public class BattleExecutor(BattleContext context)
     {
         while (true)
         {
-            foreach (var role in GetAliveRoles())
+            foreach (var role in context.GetAllAliveRoles())
             {
                 if (!role.IsAlive) continue;
 
@@ -18,7 +18,7 @@ public class BattleExecutor(BattleContext context)
                     CurrentRole = role,
                     BattleContext = context
                 };
-                takeTurnContext.Run(new PrintStatusStep());
+                takeTurnContext.Execute(new PrintStatusStep());
 
                 var result = CheckIsBattleEnd();
                 if (result != BattleResult.Ongoing) return result;
@@ -27,14 +27,6 @@ public class BattleExecutor(BattleContext context)
             foreach (var role in context.GetAllAliveRoles())
                 role.DecrementStateRounds();
         }
-    }
-
-    private IEnumerable<Role> GetAliveRoles()
-    {
-        foreach (var role in context.PlayerTroop.Allies.Where(r => r.IsAlive))
-            yield return role;
-        foreach (var role in context.EnemyTroop.Allies.Where(r => r.IsAlive))
-            yield return role;
     }
 
     private BattleResult CheckIsBattleEnd()

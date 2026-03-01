@@ -1,5 +1,6 @@
 using Rpg.Action;
 using Rpg.Core;
+using Rpg.Enum;
 
 namespace Rpg.Game;
 

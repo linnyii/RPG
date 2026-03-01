@@ -47,12 +47,12 @@ public class RpgGame
 
     public void OnRoleHealed(Role role, int amount)
     {
-        // 若需輸出治療訊息可在此處理
+        //to be implemented
     }
 
     public void OnSlimeSummoned(Role slime)
     {
-        // 若需輸出召喚訊息可在此處理
+        //to be implemented
     }
 
     public System.Action? OnMpIsSufficient { get; set; }

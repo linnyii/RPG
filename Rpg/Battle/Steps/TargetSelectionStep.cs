@@ -1,5 +1,6 @@
 using Rpg.Action;
 using Rpg.Core;
+using Rpg.Enum;
 using Rpg.Game;
 
 namespace Rpg.Battle.Steps;

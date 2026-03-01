@@ -1,4 +1,5 @@
 using Rpg.Action;
+using Rpg.Enum;
 
 namespace Rpg.Core;
 
@@ -47,11 +48,11 @@ public abstract class Role(string name, int hp, int mp, int str)
     {
         if (State == State.Normal) return;
         StateRounds--;
-        if (IsStillUnNormalStatue()) return;
+        if (IsStillUnNormalState()) return;
         SetStateToNormal();
     }
 
-    private bool IsStillUnNormalStatue()
+    private bool IsStillUnNormalState()
     {
         return StateRounds > 0;
     }

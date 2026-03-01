@@ -20,7 +20,7 @@ public class TakeTurnContext
     public void MarkCompleted<T>() where T : IBattleStep
         => CompletedSteps.Add(typeof(T));
 
-    public void Run(IBattleStep firstStep)
+    public void Execute(IBattleStep firstStep)
     {
         var step = firstStep;
         while (step != null)

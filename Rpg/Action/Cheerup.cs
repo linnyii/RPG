@@ -1,4 +1,5 @@
 using Rpg.Core;
+using Rpg.Enum;
 
 namespace Rpg.Action;
 

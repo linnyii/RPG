@@ -2,9 +2,6 @@ using Rpg.Core;
 
 namespace Rpg.AttackHandler;
 
-/// <summary>
-/// Chain of Responsibility 抽象，對應 PDF。
-/// </summary>
 public abstract class AttackHandler
 {
     private AttackHandler? Next { get; set; }
