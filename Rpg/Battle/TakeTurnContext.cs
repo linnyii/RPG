@@ -11,8 +11,8 @@ public class TakeTurnContext
     public List<Role>? SelectedTargets { get; private set; }
     private HashSet<Type> CompletedSteps { get; } = [];
 
-    public void SelectAction(IAction action) => SelectedAction = action;
-    public void SelectTargets(List<Role> targets) => SelectedTargets = targets;
+    public void SetSelectedAction(IAction action) => SelectedAction = action;
+    public void SetSelectedTargets(List<Role> targets) => SelectedTargets = targets;
 
     public bool IsCompleted<T>() where T : IBattleStep
         => CompletedSteps.Contains(typeof(T));

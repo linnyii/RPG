@@ -20,12 +20,12 @@ public class TargetSelectionStep : IBattleStep
         switch (role)
         {
             case Core.AI ai:
-                context.SelectTargets(ai.SelectionStrategy.SelectTargets(ai, candidates, targetCount));
+                context.SetSelectedTargets(ai.SelectionStrategy.SelectTargets(ai, candidates, targetCount));
                 break;
 
             case Slime:
                 var randomIdx = Random.Shared.Next(candidates.Count);
-                context.SelectTargets([candidates[randomIdx]]);
+                context.SetSelectedTargets([candidates[randomIdx]]);
                 break;
 
             case Hero:
@@ -52,7 +52,7 @@ public class TargetSelectionStep : IBattleStep
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToList();
 
-            context.SelectTargets(parts
+            context.SetSelectedTargets(parts
                 .Select(s => int.TryParse(s, out var i) ? i : -1)
                 .Where(i => i >= 0 && i < candidates.Count)
                 .Take(targetCount)
@@ -61,7 +61,7 @@ public class TargetSelectionStep : IBattleStep
         }
         else
         {
-            context.SelectTargets(candidates.Take(targetCount).ToList());
+            context.SetSelectedTargets(candidates.Take(targetCount).ToList());
         }
     }
 

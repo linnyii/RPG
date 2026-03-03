@@ -17,11 +17,11 @@ public class ActionSelectionStep : IBattleStep
         {
             case Core.AI ai:
                 var validActions = role.Actions.Where(a => role.Mp >= a.MpCost).ToList();
-                context.SelectAction(ai.SelectionStrategy.SelectAction(ai, validActions));
+                context.SetSelectedAction(ai.SelectionStrategy.SelectAction(ai, validActions));
                 break;
 
             case Slime:
-                context.SelectAction(role.Actions[0]);
+                context.SetSelectedAction(role.Actions[0]);
                 break;
 
             case Hero:
@@ -43,7 +43,7 @@ public class ActionSelectionStep : IBattleStep
                 var action = role.Actions[selectedAction];
                 if (role.Mp >= action.MpCost)
                 {
-                    context.SelectAction(action);
+                    context.SetSelectedAction(action);
                     break;
                 }
                 GameOutput.PrintMpIsSufficient();
